@@ -25,7 +25,7 @@ const GamePage = ({ player1, player2 }) => {
   };
 
   const playRound = () => {
-    if (currentRound > 6) return; // Stop the game after 6 rounds
+    if (currentRound > 6) return;     
 
     const result = determineWinner(player1Choice, player2Choice);
     const roundResult = { player1Choice, player2Choice, result };
@@ -66,7 +66,7 @@ const GamePage = ({ player1, player2 }) => {
     <div>
       <h2>Round {currentRound <= 6 ? currentRound : 6} of 6</h2>
 
-      {!winner && ( // Disable choices and button after game ends
+      {!winner && (  
         <>
           <div>
             <label>Player 1 Choice: </label>
