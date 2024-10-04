@@ -25,6 +25,8 @@ const GamePage = ({ player1, player2 }) => {
   };
 
   const playRound = () => {
+    if (currentRound > 6) return; // Stop the game after 6 rounds
+
     const result = determineWinner(player1Choice, player2Choice);
     const roundResult = { player1Choice, player2Choice, result };
 
@@ -37,19 +39,20 @@ const GamePage = ({ player1, player2 }) => {
     setPlayer2Choice('');
 
     if (currentRound === 6) {
-      setWinner(player1Score > player2Score ? player1 : player2);
-      saveGame();
+      const finalWinner = player1Score > player2Score ? player1 : player2;
+      setWinner(finalWinner);
+      saveGame(finalWinner);
     }
   };
 
-  const saveGame = async () => {
+  const saveGame = async (finalWinner) => {
     const gameData = {
       player1Name: player1,
       player2Name: player2,
       rounds,
       player1Score,
       player2Score,
-      winner: player1Score > player2Score ? player1 : player2,
+      winner: finalWinner,
     };
 
     try {
@@ -61,36 +64,41 @@ const GamePage = ({ player1, player2 }) => {
 
   return (
     <div>
-      <h2>Round {currentRound}</h2>
-      <div>
-        <label>Player 1 Choice: </label>
-        <select
-          value={player1Choice}
-          onChange={(e) => setPlayer1Choice(e.target.value)}
-        >
-          <option value="">Choose</option>
-          {choices.map((choice) => (
-            <option key={choice} value={choice}>
-              {choice}
-            </option>
-          ))}
-        </select>
-      </div>
-      <div>
-        <label>Player 2 Choice: </label>
-        <select
-          value={player2Choice}
-          onChange={(e) => setPlayer2Choice(e.target.value)}
-        >
-          <option value="">Choose</option>
-          {choices.map((choice) => (
-            <option key={choice} value={choice}>
-              {choice}
-            </option>
-          ))}
-        </select>
-      </div>
-      <button onClick={playRound}>Submit Round</button>
+      <h2>Round {currentRound <= 6 ? currentRound : 6} of 6</h2>
+
+      {!winner && ( // Disable choices and button after game ends
+        <>
+          <div>
+            <label>Player 1 Choice: </label>
+            <select
+              value={player1Choice}
+              onChange={(e) => setPlayer1Choice(e.target.value)}
+            >
+              <option value="">Choose</option>
+              {choices.map((choice) => (
+                <option key={choice} value={choice}>
+                  {choice}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Player 2 Choice: </label>
+            <select
+              value={player2Choice}
+              onChange={(e) => setPlayer2Choice(e.target.value)}
+            >
+              <option value="">Choose</option>
+              {choices.map((choice) => (
+                <option key={choice} value={choice}>
+                  {choice}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button onClick={playRound}>Submit Round</button>
+        </>
+      )}
 
       <h3>Score</h3>
       <p>{player1}: {player1Score}</p>
